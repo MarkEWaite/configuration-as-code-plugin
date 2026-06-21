@@ -47,6 +47,40 @@ jobs:
       }
 ```
 
+### Processing External Files and Folders
+
+
+**Example: Local Job DSL script file (`/var/jenkins_home/dsl/bootstrap.groovy`)**
+```groovy
+folder('Non-Production-CAF')
+folder('Non-Production-CAF/bootstrap')
+
+pipelineJob('Non-Production-CAF/bootstrap/bootstrap-levels-nprd') {
+    definition {
+        cps {
+            script('''
+                pipeline {
+                    agent any
+                    stages {
+                        stage('Bootstrap') {
+                            steps {
+                                echo 'Running bootstrap job from within the folder!'
+                            }
+                        }
+                    }
+                }
+            '''.stripIndent())
+            sandbox()
+        }
+    }
+}
+```
+**Corresponding `jenkins.yaml` configuration:**
+```yaml
+jobs:
+  - file: /var/jenkins_home/dsl/bootstrap.groovy
+```
+
 ## Examples
 
 Please refer to [demos](../demos/jobs) for examples to configure more complex jobs.
